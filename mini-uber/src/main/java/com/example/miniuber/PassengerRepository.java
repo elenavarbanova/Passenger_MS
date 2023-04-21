@@ -1,11 +1,14 @@
 package com.example.miniuber;
 
+import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 import java.util.Properties;
@@ -63,9 +66,17 @@ public class PassengerRepository {
         }
     }
 
-//    public void requestDriver(int passengerId, AddDriverRequest addDriverRequest) {
-//
-//    }
+    public boolean requestDriver(int passengerId, AddDriverRequest addDriverRequest) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "http://localhost:8081/drivers/driver/" + addDriverRequest.getDriverId();
+        HttpEntity httpEntity = new HttpEntity<>(addDriverRequest);
+        String response = restTemplate.postForObject(url, httpEntity, String.class);
+        if (response.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 
     public void postLastGeolocation(int id, String location) {
         String channelName = "geolocation-oassenger" + Integer.toString(id);

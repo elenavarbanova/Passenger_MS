@@ -40,8 +40,9 @@ public class PassengerService {
         return passengerRepository.isPassengerTaken(id);
     }
 
-    public void requestDriver(int passengerId, AddDriverRequest addDriverRequest) {
+    public boolean requestDriver(int passengerId, AddDriverRequest addDriverRequest) {
         passengerRepository.addDriverRequest(addDriverRequest.getDriver());
+        return false;
     }
     public void postLastGeolocation(int id, String geolocation) {
         Optional<Passenger> isPassengerReal = getPassenger(id);

@@ -40,18 +40,20 @@ public class PassengerController {
     }
 
     @PostMapping("/{id}/request-driver")
-    public void requestDriver(@PathVariable int passengerId, @RequestBody AddDriversRequest addDriversRequest) {
+    public boolean requestDriver(@PathVariable int passengerId, @RequestBody AddDriverRequest addDriverRequest) {
         Optional<Passenger> isPassengerReal = getPassenger(passengerId);
         if (isPassengerReal.isPresent()) {
             throw new RuntimeException("Passenger not found");
         }
-        if (addDriversRequest.getDriver() == null || addDriversRequest.getDriver().isEmpty()) {
+        if (addDriverRequest.getDriver() == null || addDriverRequest.getDriver().isEmpty()) {
             throw new RuntimeException("Driver id is required");
         }
-        boolean success = passengerService.addDriversRequest(addDriversRequest.getDriver());
+        boolean success = passengerService.requestDriver(passengerId, addDriverRequest);
         if(!success) {
             throw new RuntimeException("Driver is unavailable");
+            return success;
         }
+        return success;
     }
 
     @PostMapping("/{id}/geolocation/{location}")
