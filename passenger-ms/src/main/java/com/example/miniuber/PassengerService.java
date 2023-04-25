@@ -53,7 +53,7 @@ public class PassengerService {
     public void postLastGeolocation(int id, String geolocation) {
         Optional<Passenger> isPassengerReal = getPassenger(id);
         if (isPassengerReal.isPresent()) {
-            kafkaTemplate.send("passenger_geolocation",);
+            kafkaTemplate.send("passenger_geolocation", geolocation);
             passengerRepository.postLastGeolocation(id, geolocation);
         }
     }

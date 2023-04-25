@@ -9,12 +9,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @EnableKafka
 @Repository
 public class PassengerRepository {
-    private final KafkaTemplate<String, String> kafkaTemplate
+    private KafkaTemplate<String, HashMap<String, String>> kafkaTemplate;
     final JdbcTemplate jdbcTemplate;
     private String serverId = "";
 
@@ -82,7 +83,10 @@ public class PassengerRepository {
         return true;
     }
 
-    public void postLastGeolocation(int id, String location) {
-        kafkaTemplate.send("passenger_geolocation", location);
+    public void postLastGeolocation(int id, String geolocation) {
+        HashMap<String, String> message = new HashMap<>();
+        message.put("username", Integer.toString(id));
+        message.put("geolocation", geolocation);
+        kafkaTemplate.send("passenger_geolocation", String.valueOf(message));
     }
 }

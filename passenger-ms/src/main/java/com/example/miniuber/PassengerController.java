@@ -56,12 +56,12 @@ public class PassengerController {
         return success;
     }
 
-    @PostMapping("/{id}/geolocation/{location}")
-    public void postLastGeolocation(@PathVariable int id, @PathVariable String location) {
+    @PostMapping("/{id}/geolocation/{geolocation}")
+    public void postLastGeolocation(@PathVariable int id, @PathVariable String geolocation) {
         Optional<Passenger> isPassengerReal = getPassenger(id);
         if (isPassengerReal.isPresent()) {
             throw new RuntimeException("Passenger not found");
         }
-        passengerService.postLastGeolocation(id, location);
+        passengerService.postLastGeolocation(id, geolocation);
     }
 }
