@@ -1,5 +1,7 @@
 package com.example.miniuber;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -15,7 +17,7 @@ import java.util.Optional;
 @EnableKafka
 @Repository
 public class PassengerRepository {
-    private KafkaTemplate<String, HashMap<String, String>> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
     final JdbcTemplate jdbcTemplate;
     private String serverId = "";
 
@@ -87,6 +89,15 @@ public class PassengerRepository {
         HashMap<String, String> message = new HashMap<>();
         message.put("username", Integer.toString(id));
         message.put("geolocation", geolocation);
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = mapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         kafkaTemplate.send("passenger_geolocation", String.valueOf(message));
     }
 }
