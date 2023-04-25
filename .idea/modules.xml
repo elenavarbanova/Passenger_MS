@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Passenger_MS.iml" filepath="$PROJECT_DIR$/.idea/Passenger_MS.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mini-uber/mini-uber.iml" filepath="$PROJECT_DIR$/mini-uber/mini-uber.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mini-uber/passenger-ms.iml" filepath="$PROJECT_DIR$/mini-uber/passenger-ms.iml" />
     </modules>
   </component>
 </project>

@@ -45,7 +45,7 @@ public class PassengerController {
         if (isPassengerReal.isPresent()) {
             throw new RuntimeException("Passenger not found");
         }
-        if (addDriverRequest.getDriver() == null || addDriverRequest.getDriver().isEmpty()) {
+        if (addDriverRequest.getDriverId() == null || addDriverRequest.getDriverId().isEmpty()) {
             throw new RuntimeException("Driver id is required");
         }
         boolean success = passengerService.requestDriver(passengerId, addDriverRequest);

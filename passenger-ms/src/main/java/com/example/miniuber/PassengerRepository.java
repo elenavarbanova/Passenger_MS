@@ -1,21 +1,20 @@
 package com.example.miniuber;
 
-import ch.qos.logback.core.pattern.util.RestrictedEscapeUtil;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpEntity;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
-import java.util.Properties;
 
+@EnableKafka
 @Repository
 public class PassengerRepository {
-
+    private final KafkaTemplate<String, String> kafkaTemplate
     final JdbcTemplate jdbcTemplate;
     private String serverId = "";
 
@@ -24,6 +23,11 @@ public class PassengerRepository {
     }
 
     public PassengerRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public PassengerRepository(KafkaTemplate<String, String> kafkaTemplate, JdbcTemplate jdbcTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -79,17 +83,6 @@ public class PassengerRepository {
     }
 
     public void postLastGeolocation(int id, String location) {
-        String channelName = "geolocation-oassenger" + Integer.toString(id);
-
-        Properties properties = new Properties();
-        properties.put("bootstrap.servers", serverId);
-        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-
-        ProducerRecord producerRecord = new ProducerRecord(channelName, "location", location);
-
-        KafkaProducer kafkaProducer = new KafkaProducer(properties);
-        kafkaProducer.send(producerRecord);
-        kafkaProducer.close();
+        kafkaTemplate.send("passenger_geolocation", location);
     }
 }

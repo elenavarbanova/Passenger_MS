@@ -1,5 +1,6 @@
 package com.example.miniuber;
 
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -7,6 +8,11 @@ import java.util.Optional;
 @Service
 public class PassengerService {
     private PassengerRepository passengerRepository;
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public PassengerService(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     public PassengerService(PassengerRepository passengerRepository) {
         this.passengerRepository = passengerRepository;
@@ -41,12 +47,13 @@ public class PassengerService {
     }
 
     public boolean requestDriver(int passengerId, AddDriverRequest addDriverRequest) {
-        passengerRepository.addDriverRequest(addDriverRequest.getDriver());
+        passengerRepository.addDriverRequest(addDriverRequest.getDriverId());
         return false;
     }
     public void postLastGeolocation(int id, String geolocation) {
         Optional<Passenger> isPassengerReal = getPassenger(id);
         if (isPassengerReal.isPresent()) {
+            kafkaTemplate.send("passenger_geolocation",);
             passengerRepository.postLastGeolocation(id, geolocation);
         }
     }
