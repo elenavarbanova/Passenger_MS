@@ -34,7 +34,7 @@ public class PassengerController {
         return passengerService.getPassenger(id);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/driver/{id}")
     public boolean isPassengerTaken(@PathVariable int id) {
         return passengerService.isPassengerTaken(id);
     }
